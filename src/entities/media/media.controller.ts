@@ -1,4 +1,4 @@
-import { Body, CacheInterceptor, Controller, Get, Param, Post, UseInterceptors } from "@nestjs/common";
+import { Body, CacheInterceptor, Controller, Delete, Get, Param, Post, UseInterceptors } from "@nestjs/common";
 import { CreateMediaDto } from "./dto";
 import { MediaService } from "./media.services";
 
@@ -23,5 +23,21 @@ export class MediaController {
     @Get("/:id")
     public async getMedia(@Param("id") mediaId: string){
       const media = await this.mediaService.findMediaContent(mediaId);
+      return {
+        status: "success",
+        message: "Media retrieved succesfully",
+        data: media
+      }
     }
+
+    @Delete("/:id")
+    public async removeMedia(@Param("id") mediaId: string){
+        this.mediaService.deleteContent(mediaId);
+        return {
+            status: "success",
+            message: "Media removed succesfully"
+        }
+    }
+
+
 }
