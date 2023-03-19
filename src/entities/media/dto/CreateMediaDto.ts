@@ -1,7 +1,7 @@
-import { Allow, IsEnum, IsIn, IsNotEmpty, IsString, NotEquals } from "class-validator";
-import { HasMimeType, IsFile } from "nestjs-form-data";
+import { Allow, IsEnum, IsNotEmpty, IsString, NotEquals } from "class-validator";
+import { FileSystemStoredFile, HasMimeType, IsFile, MemoryStoredFile } from "nestjs-form-data";
 import { MEDIA_STATUS } from "../media.model";
-
+import "express"
 
 
 
@@ -29,7 +29,7 @@ export class CreateMediaDto {
 
     @IsFile()
     @HasMimeType(ALLOWED_MIME_TYPES)
-    readonly content: any;
+    readonly content: MemoryStoredFile | FileSystemStoredFile;
 
     @Allow()
     media_url: string;

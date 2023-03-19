@@ -10,14 +10,17 @@ services:
     depends_on:
       - stereo_base
   
-  db_service:
-    image: 'mysql:latest'
-    container_name: "stereo-base"
-    env_file: 
-      - ./.env
-    port:
-      - '3306:3306'
+ mysql_db_container:
+    container_name: "stereo_base"
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - 3306:3306
     volumes:
-      - 
+      - mysql_db_data_container:/var/lib/mysql
 
-//CONTINUE FROM HERE.
+volumes:
+  mysql_db_data_container:
+      - 

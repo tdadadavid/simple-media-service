@@ -1,5 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { FileSystemStoredFile, MemoryStoredFile } from "nestjs-form-data";
 import { MediaContentNotFoundException } from "src/commons";
+import { config } from "src/config";
 import { UploadManagerService } from "../uploadmanager/uploadmanger";
 import { CreateMediaDto } from "./dto";
 import { Media } from "./media.model";
@@ -18,15 +20,22 @@ export class MediaService {
     /**
      * @description Creates new media.
      * @param {CreateMediaDto} mediaDto 
-     * @returns 
+     * @returns {Promise<Media>}
      */
     async create(mediaDto: CreateMediaDto): Promise<Media> {
-        const uploadResponse = await this.cloudStorageService
-            .setContents(Buffer.from(mediaDto.content, 'utf-8'))
-            .setFolderDestination('public_folder')
-            .upload()
 
-        mediaDto.media_url = uploadResponse.url;
+        const file = mediaDto.content;
+        let uploadResponse;
+        if(config.storageOption === "cloudinary"){
+            uploadResponse = await this.cloudStorageService
+                .setContents((file as MemoryStoredFile).buffer)
+                .setFolderDestination('public_folder')
+                .upload()
+        }
+       
+        const url = uploadResponse.url || (file as FileSystemStoredFile).path;
+
+        mediaDto.media_url = url;
         return this.mediaRepo.create(mediaDto)
     }
 
