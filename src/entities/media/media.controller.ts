@@ -1,4 +1,14 @@
-import { Body, CacheInterceptor, Controller, Delete, Get, Param, Post, Query, UseInterceptors } from "@nestjs/common";
+import { 
+    Body, 
+    CacheInterceptor, 
+    Controller, 
+    Delete, 
+    Get, 
+    Param, 
+    Post, 
+    Query, 
+    UseInterceptors 
+} from "@nestjs/common";
 import { CreateMediaDto } from "./dto";
 import { MediaService } from "./media.services";
 
