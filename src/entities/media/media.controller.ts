@@ -9,6 +9,7 @@ import {
     Query, 
     UseInterceptors 
 } from "@nestjs/common";
+import { FormDataRequest } from "nestjs-form-data";
 import { CreateMediaDto } from "./dto";
 import { MediaService } from "./media.services";
 
@@ -20,6 +21,9 @@ export class MediaController {
 
 
     @Post()
+    @FormDataRequest({
+        
+    })
     public async createMedia(@Body() createMedia: CreateMediaDto){
         const data = await this.mediaService.create(createMedia);
         return {
@@ -40,8 +44,8 @@ export class MediaController {
     }
 
     @Get()
-    public async searchContents(@Query("title") titile: string, @Query("description") description: string){
-        const searchResults: any[] = await this.mediaService.searchContents(titile, description);
+    public async searchContents(@Query("query") query: string){
+        const searchResults: any[] = await this.mediaService.searchContents(query);
         return {
             status: "success",
             message: "Search results",

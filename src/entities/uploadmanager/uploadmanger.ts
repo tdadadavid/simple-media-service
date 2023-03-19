@@ -1,11 +1,15 @@
+import { Injectable } from "@nestjs/common";
 import { cloundinary } from "src/config";
 
-
-export class CloudStorageService {
+@Injectable()
+export class UploadManagerService {
     private contents: Buffer;
     private destinationFolder: string;
+    private cloudManager: typeof cloundinary;
 
-    constructor(private cloudManager: typeof cloundinary){}
+    constructor(){
+        this.cloudManager = cloundinary;
+    }
 
     public setContents(val: Buffer){
         this.contents = val;
@@ -19,7 +23,8 @@ export class CloudStorageService {
 
     public upload(){
         return this.cloudManager.v2.uploader.upload(this.contents.toString(), {
-            resource_type: "raw"
+            resource_type: "raw",
+            folder: this.destinationFolder,
         })
     }
 }

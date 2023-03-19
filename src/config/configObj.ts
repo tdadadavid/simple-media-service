@@ -8,5 +8,7 @@ export const config = Object.freeze({
     dbUser: process.env.DATABASE_USER,
     dbName: process.env.DATABASE_NAME,
     dbPassword: process.env.DATABASE_PASSWORD,
-    dbPort: process.env.DATABASE_PORT
+    dbPort: process.env.DATABASE_PORT,
+
+    storageOption: process.env.STORAGE_TYPE,
 });

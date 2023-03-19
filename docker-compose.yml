@@ -1,0 +1,23 @@
+version: "3.0"
+services:
+  media_service:
+    build: '.'
+    container_name: "beats-nd-stereo"
+    env_file:
+      - './.env'
+    port:
+      - '3000:3000'
+    depends_on:
+      - stereo_base
+  
+  db_service:
+    image: 'mysql:latest'
+    container_name: "stereo-base"
+    env_file: 
+      - ./.env
+    port:
+      - '3306:3306'
+    volumes:
+      - 
+
+//CONTINUE FROM HERE.

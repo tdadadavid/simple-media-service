@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getAPIStats(): {
+    status: string
+    message: string
+  } {
+    return {
+      status: "UP",
+      message: "Server is up and running"
+    }
   }
 }

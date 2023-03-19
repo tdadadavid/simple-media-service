@@ -1,11 +1,9 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
-import { Sequelize } from 'sequelize';
+import { FileSystemStoredFile, MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config, dbOptions } from './config';
-import { Media } from './entities/media/media.model';
 import { MediaModule } from './entities/media/media.module';
 
 @Module({
@@ -17,7 +15,8 @@ import { MediaModule } from './entities/media/media.module';
     NestjsFormDataModule.config({
       isGlobal: true,
       autoDeleteFile: false,
-      storage: MemoryStoredFile,
+      storage: config.storageOption === "cloudinary" ? MemoryStoredFile : FileSystemStoredFile,
+      fileSystemStoragePath: './uploads'
     }),
     SequelizeModule.forRoot(dbOptions),
     MediaModule

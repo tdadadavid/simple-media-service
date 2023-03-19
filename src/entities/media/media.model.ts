@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Optional } from "sequelize";
-import { Column, DataType, Default, Model, Table } from "sequelize-typescript";
+import { Column, CreatedAt, DataType, Default, DeletedAt, ForeignKey, HasMany, Index, Model, PrimaryKey, Table, Unique, UpdatedAt } from "sequelize-typescript";
 
 
 export enum MEDIA_STATUS {
@@ -37,6 +37,7 @@ export class Media extends Model<MediaAttributes, MediaCreationAttributes>{
     })
     id: string;
 
+    @Index('media_name_idx')
     @Column({
         type: DataType.STRING,
         unique: true,
@@ -44,13 +45,14 @@ export class Media extends Model<MediaAttributes, MediaCreationAttributes>{
     name: string;
 
     
+    @Default(DEFUALT_MEDIA_STATUS)
+    @Index('media_status_idx')
     @Column({
         type: DataType.ENUM(...(typeof MEDIA_STATUS))
     })
-    @Default(DEFUALT_MEDIA_STATUS)
     status: string;
 
-
+    
     @Column(DataType.STRING)
     url: string;
 
@@ -59,4 +61,56 @@ export class Media extends Model<MediaAttributes, MediaCreationAttributes>{
         type: DataType.STRING
     })
     description: string;
+
+    @ForeignKey(() => MediaCategory)
+    @Column
+    category: string;
+
+    @Column
+    @CreatedAt
+    createdAt: Date;
+
+    @Column
+    @UpdatedAt
+    updatedAt: Date;
+
+    @Column
+    @DeletedAt
+    deletedAt: Date;
+}
+
+@Table({
+    tableName: "media_category",
+    freezeTableName: true,
+    timestamps: true
+})
+export class MediaCategory extends Model {
+
+    @PrimaryKey
+    @Column
+    id: string;
+
+    @Unique
+    @Column
+    category: string;
+
+    @HasMany(() => Media)
+    media: Media[]
+
+    @Column({
+        allowNull: true
+    })
+    description: string;
+
+    @Column
+    @CreatedAt
+    createdAt: Date;
+
+    @Column
+    @UpdatedAt
+    updatedAt: Date;
+
+    @Column
+    @DeletedAt
+    deletedAt: Date;
 }

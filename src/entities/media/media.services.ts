@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { MediaContentNotFoundException } from "src/commons";
-import { CloudStorageService } from "../cloudservice/cloudservice";
+import { UploadManagerService } from "../uploadmanager/uploadmanger";
 import { CreateMediaDto } from "./dto";
+import { Media } from "./media.model";
 import { MediaRespository, MEDIA_REPOSITORY_KEY } from "./media.repository";
 
 
@@ -10,7 +11,7 @@ import { MediaRespository, MEDIA_REPOSITORY_KEY } from "./media.repository";
 export class MediaService {
     constructor(
        @Inject(MEDIA_REPOSITORY_KEY) private readonly mediaRepo: MediaRespository,
-       private readonly cloudStorageService: CloudStorageService,
+       private readonly cloudStorageService: UploadManagerService,
     ){}
 
     
@@ -19,7 +20,7 @@ export class MediaService {
      * @param {CreateMediaDto} mediaDto 
      * @returns 
      */
-    async create(mediaDto: CreateMediaDto){
+    async create(mediaDto: CreateMediaDto): Promise<Media> {
         const uploadResponse = await this.cloudStorageService
             .setContents(Buffer.from(mediaDto.content, 'utf-8'))
             .setFolderDestination('public_folder')
@@ -34,23 +35,29 @@ export class MediaService {
      * @param {number} page 
      * @param {number} perPage 
      */
-    async findContents(page = 1, perPage = 5){
+    async findContents(page = 1, perPage = 5): Promise<Media[]> {
+        const offset = (page - 1) * perPage;
+        const limit = perPage;
 
-        return []
+        return await this.mediaRepo.findContents({ offset, limit})
     }
 
-    async searchContents(title: string = "", description: string = ""){
-        return this.mediaRepo.searchBy(title, description);
-        
+    /**
+     * @description search for media via the description and title.
+     * @param {string} query 
+     * @returns {Promise<Media[]>}
+     */
+    async searchContents(query: string): Promise<Media[]> {
+        return await this.mediaRepo.searchBy(query);
     }
 
     /**
      * @description retrieves the media content via ID,
      * @param {string} id 
-     * @returns 
+     * @returns {Promise<Media>}
      */
-    async findMediaContent(id: string){
-        const content = await this.mediaRepo.findMedia(id);
+    async findMediaContent(id: string): Promise<Media> {
+        const content = await this.mediaRepo.findContent(id);
         if(!content) throw new MediaContentNotFoundException(`Requested media content does not exists.`);
 
         return content;
@@ -59,6 +66,7 @@ export class MediaService {
     /**
      * @description removes a media content.
      * @param {string} id 
+     * @returns {Promise<boolean>}
      */
     async deleteContent(id: string): Promise<boolean> {
         await this.mediaRepo.delete(id);

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { CloudserviceModule } from '../cloudservice/cloudservice.module';
+import { UploadManagerModule } from '../uploadmanager/uploadmanger.module';
 import { MediaController } from './media.controller';
 import { Media } from './media.model';
 import { MediaRespositoryImpl, MEDIA_REPOSITORY_KEY } from './media.repository';
@@ -9,7 +9,7 @@ import { MediaService } from './media.services';
 @Module({
   imports: [
     SequelizeModule.forFeature([Media]),
-    CloudserviceModule
+    UploadManagerModule
   ],
   controllers: [MediaController],
   providers: [
