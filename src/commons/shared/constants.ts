@@ -1,0 +1,1 @@
+export const SEQUELIZE_KEY = Symbol("SEQUELIZE");

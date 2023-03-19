@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
 import { UpdateMediaDto } from "./dto";
 import { Media } from "./media.model";
 
@@ -9,12 +10,15 @@ export interface MediaRespository {
     create(media: unknown);
     delete(id: string);
     update(id: string, updateMediaDto: UpdateMediaDto)
+    searchBy(titile: string, description: string): any; //TODO: make the search options generic.
 }
 
 @Injectable()
 export class MediaRespositoryImpl implements MediaRespository {
 
-    constructor(private readonly media: typeof Media){}
+    constructor(
+        @InjectModel(Media) private readonly media: typeof Media
+    ){}
 
 
     async findMedia(id: string): Promise<Media | null> {
@@ -31,6 +35,10 @@ export class MediaRespositoryImpl implements MediaRespository {
                 id
             },
         })
+    }
+
+    async searchBy(title: string, description: string) {
+       
     }
 
     async update(id: string, updateMediaDto: UpdateMediaDto) {

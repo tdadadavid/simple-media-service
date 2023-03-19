@@ -30,6 +30,21 @@ export class MediaService {
     }
 
     /**
+     * @description retrieves all media contents.
+     * @param {number} page 
+     * @param {number} perPage 
+     */
+    async findContents(page = 1, perPage = 5){
+
+        return []
+    }
+
+    async searchContents(title: string = "", description: string = ""){
+        return this.mediaRepo.searchBy(title, description);
+        
+    }
+
+    /**
      * @description retrieves the media content via ID,
      * @param {string} id 
      * @returns 

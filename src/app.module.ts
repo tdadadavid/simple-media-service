@@ -1,8 +1,12 @@
 import { CacheModule, Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { Sequelize } from 'sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MediaModule } from './media/media.module';
+import { config, dbOptions } from './config';
+import { Media } from './entities/media/media.model';
+import { MediaModule } from './entities/media/media.module';
 
 @Module({
   imports: [
@@ -15,6 +19,7 @@ import { MediaModule } from './media/media.module';
       autoDeleteFile: false,
       storage: MemoryStoredFile,
     }),
+    SequelizeModule.forRoot(dbOptions),
     MediaModule
   ],
   controllers: [AppController],

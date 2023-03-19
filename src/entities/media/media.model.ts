@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Optional } from "sequelize";
-import { Model, Table } from "sequelize-typescript";
+import { Column, DataType, Default, Model, Table } from "sequelize-typescript";
 
 
 export enum MEDIA_STATUS {
@@ -17,6 +17,8 @@ export interface MediaAttributes {
     type: string
 }
 
+const DEFUALT_MEDIA_STATUS: keyof typeof MEDIA_STATUS = "ACTIVE"
+
 interface MediaCreationAttributes extends Optional<MediaAttributes, "id">{}
 
 
@@ -26,4 +28,35 @@ interface MediaCreationAttributes extends Optional<MediaAttributes, "id">{}
     freezeTableName: true,
     timestamps: true
 })
-export class Media extends Model<MediaAttributes, MediaCreationAttributes>{}
+export class Media extends Model<MediaAttributes, MediaCreationAttributes>{
+
+    @Column({
+        unique: true,
+        type: DataType.UUID,
+        primaryKey: true,
+    })
+    id: string;
+
+    @Column({
+        type: DataType.STRING,
+        unique: true,
+    })
+    name: string;
+
+    
+    @Column({
+        type: DataType.ENUM(...(typeof MEDIA_STATUS))
+    })
+    @Default(DEFUALT_MEDIA_STATUS)
+    status: string;
+
+
+    @Column(DataType.STRING)
+    url: string;
+
+
+    @Column({
+        type: DataType.STRING
+    })
+    description: string;
+}
